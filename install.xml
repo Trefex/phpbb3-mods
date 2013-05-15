@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--NOTICE: Please open this file in your web browser. If presented with a security warning, you may safely tell it to allow the blocked content.-->
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD.\nAlthough MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD.\nNo support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
+	<header>
+		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
+		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
+		<title lang="en"><![CDATA[Parse BBCode in Custom Profile Fields]]></title>
+		<description lang="en"><![CDATA[This mod parses BBCode in Custom Profile Fields. Works in both ViewTopic and ViewProfile.]]></description>
+		<author-group>
+			<author>
+				<realname><![CDATA[Trefex]]></realname>
+				<username><![CDATA[Trefex]]></username>
+				<homepage><![CDATA[http://www.trefois.com]]></homepage>
+				<email><![CDATA[trefex@gmail.com]]></email>
+			</author>
+		</author-group>
+		<mod-version>1.0.5</mod-version>
+		<installation>
+			<level>easy</level>
+			<time>300</time>
+			<target-version>3.0.11</target-version>
+		</installation>
+		<history>
+			<entry>
+				<date>2008-01-21</date>
+				<rev-version>0.1.0</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Initial Release]]></change>
+					<change><![CDATA[Works for viewtopic only]]></change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2008-07-05</date>
+				<rev-version>1.0.0</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Created MODX Install Template]]></change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2008-07-23</date>
+				<rev-version>1.0.3</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Install File was wrong]]></change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2010-06-18</date>
+				<rev-version>1.0.4</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Tested for latest phpBB version]]></change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2012-11-08</date>
+				<rev-version>1.0.5</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Tested for latest phpBB version]]></change>
+				</changelog>
+			</entry>
+		</history>
+	</header>
+	<action-group>
+		<open src="memberlist.php">
+			<edit>
+				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
+				<action type="after-add"><![CDATA[include_once($phpbb_root_path . 'includes/functions_content.' . $phpEx);]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[foreach ($profile_fields['blockrow'] as $field_data)
+{]]></find>
+				<action type="after-add"><![CDATA[$uid = $bitfield = $options = '';
+$allowed_bbcode = $allowed_smilies = $allowed_urls = true;
+
+generate_text_for_storage($field_data["PROFILE_FIELD_VALUE"], $uid, $bitfield, $options, $allowed_bbcode, $allowed_smilies, $allowed_urls);
+$field_data["PROFILE_FIELD_VALUE"] = generate_text_for_display($field_data["PROFILE_FIELD_VALUE"], $uid, $bitfield, $options);]]></action>
+			</edit>
+		</open>
+		<open src="viewtopic.php">
+			<edit>
+				<find><![CDATA[include($phpbb_root_path . 'includes/bbcode.' . $phpEx);]]></find>
+				<action type="after-add"><![CDATA[include_once($phpbb_root_path . 'includes/functions_content.' . $phpEx);]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[foreach ($cp_row['blockrow'] as $field_data)
+{]]></find>
+				<action type="after-add"><![CDATA[$uid = $bitfield = $options = '';
+$allowed_bbcode = $allowed_smilies = $allowed_urls = true;
+
+generate_text_for_storage($field_data["PROFILE_FIELD_VALUE"], $uid, $bitfield, $options, $allowed_bbcode, $allowed_smilies, $allowed_urls);
+$field_data["PROFILE_FIELD_VALUE"] = generate_text_for_display($field_data["PROFILE_FIELD_VALUE"], $uid, $bitfield, $options);]]></action>
+			</edit>
+		</open>
+	</action-group>
+</mod>
