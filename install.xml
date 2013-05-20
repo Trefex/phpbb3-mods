@@ -2,12 +2,28 @@
 <?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
 <!--NOTICE: Please open this file in your web browser. If presented with a security warning, you may safely tell it to allow the blocked content.-->
 <!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD.\nAlthough MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD.\nNo support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
-<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://www.phpbb.com/mods/xml/modx-1.2.6.xsd">
 	<header>
 		<meta name="generator" content="MODX file generated with PP MODX Creator by tumba25 (online version)"/>
 		<license><![CDATA[http://opensource.org/licenses/gpl-license.php GNU General Public License v2]]></license>
 		<title lang="en"><![CDATA[Parse BBCode in Custom Profile Fields]]></title>
-		<description lang="en"><![CDATA[This mod parses BBCode in Custom Profile Fields. Works in both ViewTopic and ViewProfile.]]></description>
+		<description lang="en"><![CDATA[This mod parses BBCode in Custom Profile Fields. Works in both ViewTopic and Memberlist.
+
+If you want to see Custom Profile Fields in the default memberlist view, you need to modify your template first. 
+
+Example given with subsilver2.
+
+Go to styles\subsilver2\template and edit memberlist_body.html,
+then find the area that looks like this
+
+<!-- IF memberrow.S_PROFILE_FIELD1 -->
+	<!-- Use a construct like this to include admin defined profile fields. Replace FIELD1 with the name of your field. -->
+	<td class="gen" align="center">&nbsp;{memberrow.PROFILE_FIELD1_VALUE}</td>
+<!-- ENDIF -->
+
+You need to change FIELD1 to your custom profile field name. 
+
+Remember to clear your cache when you're done and now the BBCode should be parsed.]]></description>
 		<author-group>
 			<author>
 				<realname><![CDATA[Trefex]]></realname>
@@ -16,7 +32,7 @@
 				<email><![CDATA[trefex@gmail.com]]></email>
 			</author>
 		</author-group>
-		<mod-version>1.0.5</mod-version>
+		<mod-version>1.0.6</mod-version>
 		<installation>
 			<level>easy</level>
 			<time>300</time>
@@ -59,38 +75,27 @@
 					<change><![CDATA[Tested for latest phpBB version]]></change>
 				</changelog>
 			</entry>
+			<entry>
+				<date>2013-05-20</date>
+				<rev-version>1.0.6</rev-version>
+				<changelog lang="en">
+					<change><![CDATA[Simplified Install Script]]></change>
+				</changelog>
+			</entry>
 		</history>
 	</header>
 	<action-group>
-		<open src="memberlist.php">
+		<open src="functions_profile_fields.php">
 			<edit>
-				<find><![CDATA[include($phpbb_root_path . 'includes/functions_display.' . $phpEx);]]></find>
-				<action type="after-add"><![CDATA[include_once($phpbb_root_path . 'includes/functions_content.' . $phpEx);]]></action>
-			</edit>
-			<edit>
-				<find><![CDATA[foreach ($profile_fields['blockrow'] as $field_data)
-{]]></find>
+				<find><![CDATA[foreach ($field_data as $user_id => $row)
+ {]]></find>
 				<action type="after-add"><![CDATA[$uid = $bitfield = $options = '';
 $allowed_bbcode = $allowed_smilies = $allowed_urls = true;
 
-generate_text_for_storage($field_data["PROFILE_FIELD_VALUE"], $uid, $bitfield, $options, $allowed_bbcode, $allowed_smilies, $allowed_urls);
-$field_data["PROFILE_FIELD_VALUE"] = generate_text_for_display($field_data["PROFILE_FIELD_VALUE"], $uid, $bitfield, $options);]]></action>
+generate_text_for_storage($row['pf_' . $used_ident], $uid, $bitfield, $options, $allowed_bbcode, $allowed_smilies, $allowed_urls);
+$row['pf_' . $used_ident] = generate_text_for_display($row['pf_' . $used_ident], $uid, $bitfield, $options);]]></action>
 			</edit>
 		</open>
-		<open src="viewtopic.php">
-			<edit>
-				<find><![CDATA[include($phpbb_root_path . 'includes/bbcode.' . $phpEx);]]></find>
-				<action type="after-add"><![CDATA[include_once($phpbb_root_path . 'includes/functions_content.' . $phpEx);]]></action>
-			</edit>
-			<edit>
-				<find><![CDATA[foreach ($cp_row['blockrow'] as $field_data)
-{]]></find>
-				<action type="after-add"><![CDATA[$uid = $bitfield = $options = '';
-$allowed_bbcode = $allowed_smilies = $allowed_urls = true;
-
-generate_text_for_storage($field_data["PROFILE_FIELD_VALUE"], $uid, $bitfield, $options, $allowed_bbcode, $allowed_smilies, $allowed_urls);
-$field_data["PROFILE_FIELD_VALUE"] = generate_text_for_display($field_data["PROFILE_FIELD_VALUE"], $uid, $bitfield, $options);]]></action>
-			</edit>
-		</open>
+		<diy-instructions lang="en"><![CDATA[Clear the cache after finishing installation in the ACP]]></diy-instructions>
 	</action-group>
 </mod>
