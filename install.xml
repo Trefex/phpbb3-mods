@@ -85,7 +85,7 @@ Remember to clear your cache when you're done and now the BBCode should be parse
 		</history>
 	</header>
 	<action-group>
-		<open src="functions_profile_fields.php">
+		<open src="includes/functions_profile_fields.php">
 			<edit>
 				<find><![CDATA[foreach ($field_data as $user_id => $row)
  {]]></find>
